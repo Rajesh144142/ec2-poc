@@ -1,0 +1,18 @@
+{
+  "name": "ec2-poc-api",
+  "version": "1.0.0",
+  "description": "Simple Node.js API for EC2 deployment",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js"
+  },
+  "keywords": ["api", "express", "node"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1"
+  }
+}
+

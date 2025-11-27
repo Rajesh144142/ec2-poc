@@ -2,6 +2,9 @@
 
 echo "Starting deployment..."
 
+echo "Installing Git..."
+sudo yum install git -y
+
 echo "Installing Docker..."
 sudo yum update -y
 sudo yum install docker -y

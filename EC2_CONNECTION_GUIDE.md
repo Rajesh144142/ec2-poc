@@ -101,12 +101,15 @@ Once connected, you can deploy your API with Nginx:
 
 ### Option 1: Quick Deploy (Using deploy script)
 
-1. **Upload your project files to EC2:**
-   - Use SCP, SFTP, or Git to transfer files
-   - Or clone from your repository:
+1. **Install Git (if not installed):**
    ```bash
-   git clone <your-repo-url>
-   cd EC2_POC
+   sudo yum install git -y
+   ```
+
+2. **Clone from your repository:**
+   ```bash
+   git clone https://github.com/Rajesh144142/ec2-poc.git
+   cd ec2-poc
    ```
 
 2. **Run deployment script:**
@@ -117,43 +120,42 @@ Once connected, you can deploy your API with Nginx:
 
 ### Option 2: Manual Deploy
 
-1. **Update system:**
+1. **Install Git:**
 ```bash
-echo "# ec2-poc" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/Rajesh144142/ec2-poc.git
-git push -u origin main```
+sudo yum install git -y
+```
 
-2. **Install Docker:**
+2. **Clone the repository:**
+```bash
+git clone https://github.com/Rajesh144142/ec2-poc.git
+cd ec2-poc
+```
+
+3. **Install Docker:**
 ```bash
 sudo yum install docker -y
 sudo service docker start
 sudo usermod -a -G docker ec2-user
 ```
 
-3. **Install Docker Compose:**
+4. **Install Docker Compose:**
 ```bash
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 ```
 
-4. **Clone and deploy:**
+5. **Deploy the application:**
 ```bash
-git clone <your-repo-url>
-cd EC2_POC
 docker-compose up -d
 ```
 
-5. **Verify deployment:**
+6. **Verify deployment:**
 ```bash
 docker ps
 ```
 
-6. **Configure Security Group:**
+7. **Configure Security Group:**
    - Add inbound rule: Port `80` (HTTP), Source: `0.0.0.0/0` (or your IP)
    - Your API will be accessible at: `http://YOUR_EC2_IP`
 

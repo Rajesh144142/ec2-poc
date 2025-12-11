@@ -59,7 +59,6 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     environment:
       name: production
-      url: http://${{ secrets.EC2_HOST }}
     
     steps:
     - name: Checkout code

@@ -25,45 +25,18 @@ The EC2 username depends on your **AMI (Amazon Machine Image)** type. Here's how
 
 Since you have the IP (44.223.6.71) and SSH key, try these in order:
 
-### Step 1: Save your SSH key to a file
+### Step 1: Prepare Your SSH Key
 
-**On Windows (PowerShell):**
+**You already have your SSH private key.** Save it to a file named `ec2-key.pem` in a secure location.
+
+**Set correct permissions:**
 ```powershell
-# Create the key file
-@"
------BEGIN RSA PRIVATE KEY-----
-MIIEogIBAAKCAQEAov6RXNE6q60+5+FwPvTuckq6WfFThlaw2q2kIlY540xLPoSI
-OcBeiAJvOVcz+BvVDMhUpDNvEUgwPPzc1qeuGMAV/0KJdoTVVkjcQMzeBgI7mAHo
-y8pjAjfW3X2vbEfgLrsaJgdoS1TgFY04GSquIdUUdSmJrquNy/wtdihRa1yLiJJs
-no/hjIwf0eWnG5urgoHWr/2DJobTaYSub2ISEhpPqZrY8I66iOklCOHE9tNhWCTT
-v/S+RR57gWG0Oa0N6IOFP9rH8cU1uviZNLXKxDKnsypIYaIjPheLNwwH/9i+HINL
-S/SghXa78bUdUosizuecKVpmK3bnBUqCaWlQ3wIDAQABAoIBAAfrNkS8JY2RrSy2
-1y032R3UY5lbECPGsnDtXrwMVGOmoUE4TyX/IpiZBa5TfkLfl0o3sWUI2qyMRUux
-PUlwfBTXwDnWkbcgXP0ELS84xNCl6x9HeHfuLUE+VUINiShJlaqvjGWslnSSexCQ
-+9i9KhiasZO/oODLlOgEKHFFJC+DC6Ufrhr+DgiXog0k0gs967LcJ73zYuhIjunG
-5r1aowa3Hq6p/FmUSHkN/Y0DF5jZsqNPS5dnbUsoyu9/6AyGr39Ic4NAvVHppntz
-0ALKvcVkwYeUQqf+nc0IGNCTTwGX6D3T8BCiZy1e4ebPByRZ1mOHJyQkhl7e3mT8
-YZclCYECgYEA1npjXOV3WKLpTGpU33fzc94pxh8gFtc8bzhiqOYbmANbelD/LZrS
-sCg0AJR6XR13yfwPWq5oRh4FbLB8pYojo8kHVvx3I5vGnArEv90Uo7D8GSIlrGsK
-q6H6g8Ap2xGd9/ffORG5C+NFfot86dN6Fcx4yWGuJyj/iYaOdphX6iMCgYEAwoyh
-S1PGw43YAAutJYs3vV4+xSPo7pZor+dWuUtqd2BC5uQh2+7E4W0NYAhKu8saWJCs
-EubakGMSIrtwq+rQfPCI0fxLJ1a4dUIHMEnmkx/fzy7InEOs3t/R8i8nrS3+zq/h
-/UbmDEo6TapTYYlHgQAOxQHpJktfJJUGIWcMNBUCgYA3sYw/wS5ei989ApeLd+B2
-BAig89AnXjjJQMENzsL3lFeayZGZzAxNxgLK68NijpZekt+B0qwtGPqboLCdY+Oh
-UkBfrCtbycWnG3y/va7wWrL768wQm7MnomYk9C9qPYbhrzH95cZBegC/vYTwSwP2
-ySPMV1sbvB+vHIu97A1YNQKBgCDVAtNni/+sjGtVjR7s47c9lHJIoSLCl2A4NlaG
-96y1vhShI2WuYeN5N+yg+Zu/pu6TW7bE5tW/ImxiHZ2lvxGWtkBZx4UYCYEgZ34q
-upLRqj+YsZpNgXsLYq7wbk23mWzgGc9Yi7I/RJ+ewvuO41ZN4DA3JlWkGqZdz+8L
-KPARAoGAVOSm5BZ9c29w95rPjrtpKVuaA5kYEVZNnlWDNwqKppqseTuOqi5Syfb5
-4YkDty1lfSSwnx9+idSNqLtFiNflH1WlceZNWlAlFetzDgC4ReziR5OBJrpXS4NM
-n8mb0nHCUYJmcyBtVivXgJLts1OKdvl7RM+UlyqjoqP3V8tts1w=
------END RSA PRIVATE KEY-----
-"@ | Out-File -FilePath "ec2-key.pem" -Encoding ASCII
-
-# Set correct permissions (important!)
+# On Windows PowerShell
 icacls "ec2-key.pem" /inheritance:r
-icacls "ec2-key.pem" /grant:r "$env:USERNAME:R"
+icacls "ec2-key.pem" /grant "${env:USERNAME}:R"
 ```
+
+**Important:** Never share or commit your private key!
 
 ### Step 2: Test Connection with Different Usernames
 

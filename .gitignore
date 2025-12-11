@@ -3,3 +3,8 @@ node_modules
 npm-debug.log
 .DS_Store
 
+# SSH Keys - NEVER commit these!
+*.pem
+*.key
+ec2-key.pem
+

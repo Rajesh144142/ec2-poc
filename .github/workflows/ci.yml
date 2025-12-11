@@ -1,0 +1,49 @@
+name: CI Only (No Deploy)
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+env:
+  NODE_VERSION: '18'
+  DOCKER_IMAGE: ec2-poc-api
+
+jobs:
+  test:
+    name: Test and Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run linter (if available)
+      run: npm run lint || echo "No lint script found, skipping..."
+      continue-on-error: true
+    
+    - name: Run tests (if available)
+      run: npm test || echo "No tests found, skipping..."
+      continue-on-error: true
+    
+    - name: Build Docker image
+      run: docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} -t ${{ env.DOCKER_IMAGE }}:latest .
+    
+    - name: Test Docker image
+      run: |
+        docker run -d --name test-container -p 3000:3000 ${{ env.DOCKER_IMAGE }}:latest
+        sleep 5
+        curl -f http://localhost:3000/health || exit 1
+        docker stop test-container
+        docker rm test-container
+

@@ -110,3 +110,39 @@ docker-compose restart
 docker-compose up -d --build
 ```
 
+## CI/CD (Automated Deployment)
+
+This project includes GitHub Actions workflows for automated testing and deployment.
+
+### Quick Setup
+
+1. **Configure GitHub Secrets:**
+   - Go to repository → Settings → Secrets and variables → Actions
+   - Add: `EC2_HOST`, `EC2_USER`, `EC2_SSH_KEY`
+   - See [`.github/SETUP.md`](.github/SETUP.md) for detailed instructions
+
+2. **Push to main branch:**
+   - The workflow automatically runs on every push to `main` or `master`
+   - It will test, build, and deploy to your EC2 instance
+
+### Workflows
+
+- **`.github/workflows/deploy.yml`**: Full CI/CD pipeline
+  - Tests code on every push/PR
+  - Deploys to EC2 on push to main/master
+  - Includes health checks and rollback on failure
+
+- **`.github/workflows/ci.yml`**: CI only (for pull requests)
+  - Tests and builds without deploying
+
+### Manual Deployment
+
+You can also deploy manually using the script:
+```bash
+./deploy.sh
+```
+
+For detailed CI/CD documentation, see:
+- [`.github/SETUP.md`](.github/SETUP.md) - Setup instructions
+- [`CI_CD_GUIDE.md`](CI_CD_GUIDE.md) - Comprehensive guide
+

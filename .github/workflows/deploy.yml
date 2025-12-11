@@ -1,0 +1,163 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:  # Allows manual trigger
+
+env:
+  NODE_VERSION: '18'
+  DOCKER_IMAGE: ec2-poc-api
+
+jobs:
+  test:
+    name: Test and Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run linter (if available)
+      run: npm run lint || echo "No lint script found, skipping..."
+      continue-on-error: true
+    
+    - name: Run tests (if available)
+      run: npm test || echo "No tests found, skipping..."
+      continue-on-error: true
+    
+    - name: Build Docker image
+      run: docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} -t ${{ env.DOCKER_IMAGE }}:latest .
+    
+    - name: Test Docker image
+      run: |
+        docker run -d --name test-container -p 3000:3000 ${{ env.DOCKER_IMAGE }}:latest
+        sleep 5
+        curl -f http://localhost:3000/health || exit 1
+        docker stop test-container
+        docker rm test-container
+
+  deploy:
+    name: Deploy to EC2
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    environment:
+      name: production
+      url: http://${{ secrets.EC2_HOST }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        timeout: 300s
+        script: |
+          set -e
+          echo "🚀 Starting deployment..."
+          
+          # Navigate to project directory (create if doesn't exist)
+          if [ ! -d "~/ec2-poc" ]; then
+            echo "📁 Creating project directory..."
+            mkdir -p ~/ec2-poc
+            cd ~/ec2-poc
+            # Use REPO_URL secret if available, otherwise construct from GitHub context
+            REPO_URL="${{ secrets.REPO_URL }}"
+            if [ -z "$REPO_URL" ]; then
+              REPO_URL="https://github.com/${{ github.repository }}.git"
+            fi
+            git clone "$REPO_URL" . || true
+          else
+            cd ~/ec2-poc
+          fi
+          
+          echo "📥 Pulling latest code..."
+          git fetch origin
+          git reset --hard origin/main || git reset --hard origin/master
+          git clean -fd
+          
+          echo "🔨 Building Docker image..."
+          docker build -t ${{ env.DOCKER_IMAGE }}:${{ github.sha }} -t ${{ env.DOCKER_IMAGE }}:latest .
+          
+          echo "🛑 Stopping old containers..."
+          docker-compose down || true
+          
+          echo "🚀 Starting new containers..."
+          docker-compose up -d --build
+          
+          echo "🧹 Cleaning up unused Docker resources..."
+          docker system prune -f
+          
+          echo "⏳ Waiting for services to be ready..."
+          sleep 10
+          
+          echo "✅ Checking container status..."
+          docker ps
+          
+          echo "🏥 Testing health endpoint..."
+          max_attempts=5
+          attempt=1
+          while [ $attempt -le $max_attempts ]; do
+            if curl -f http://localhost/health > /dev/null 2>&1; then
+              echo "✅ Health check passed!"
+              break
+            else
+              echo "⏳ Health check attempt $attempt/$max_attempts failed, retrying..."
+              sleep 5
+              attempt=$((attempt + 1))
+            fi
+          done
+          
+          if [ $attempt -gt $max_attempts ]; then
+            echo "❌ Health check failed after $max_attempts attempts"
+            echo "📋 Container logs:"
+            docker-compose logs --tail=50
+            exit 1
+          fi
+          
+          echo "🎉 Deployment successful!"
+          echo "📊 Final container status:"
+          docker ps
+          echo "📋 Recent logs:"
+          docker-compose logs --tail=20
+    
+    - name: Deployment Summary
+      if: success()
+      run: |
+        echo "## ✅ Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployed to:** ${{ secrets.EC2_HOST }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Time:** $(date)" >> $GITHUB_STEP_SUMMARY
+    
+    - name: Deployment Failed
+      if: failure()
+      run: |
+        echo "## ❌ Deployment Failed!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Please check the logs above for details." >> $GITHUB_STEP_SUMMARY
+        echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+

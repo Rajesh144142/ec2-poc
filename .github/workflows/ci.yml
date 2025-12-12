@@ -41,9 +41,42 @@ jobs:
     
     - name: Test Docker image
       run: |
+        echo "Starting test container..."
         docker run -d --name test-container -p 3000:3000 ${{ env.DOCKER_IMAGE }}:latest
-        sleep 5
-        curl -f http://localhost:3000/health || exit 1
+        
+        echo "Waiting for container to be ready..."
+        sleep 3
+        
+        echo "Checking container status..."
+        docker ps -a | grep test-container
+        
+        echo "Checking container logs..."
+        docker logs test-container
+        
+        echo "Waiting for API to be ready..."
+        max_attempts=10
+        attempt=1
+        while [ $attempt -le $max_attempts ]; do
+          if curl -f http://localhost:3000/health > /dev/null 2>&1; then
+            echo "✅ Health check passed!"
+            curl http://localhost:3000/health
+            break
+          else
+            echo "⏳ Health check attempt $attempt/$max_attempts failed, retrying..."
+            sleep 2
+            attempt=$((attempt + 1))
+          fi
+        done
+        
+        if [ $attempt -gt $max_attempts ]; then
+          echo "❌ Health check failed after $max_attempts attempts"
+          echo "Container logs:"
+          docker logs test-container
+          docker ps -a | grep test-container
+          exit 1
+        fi
+        
+        echo "Cleaning up test container..."
         docker stop test-container
         docker rm test-container
 

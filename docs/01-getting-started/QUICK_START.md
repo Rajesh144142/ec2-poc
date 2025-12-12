@@ -1,8 +1,10 @@
 # Quick Start - CI/CD Setup with Your EC2 Instance
 
 ## Your EC2 Details
-- **IP Address**: `44.223.6.71`
+- **IP Address**: `YOUR_EC2_IP` (e.g., `44.223.6.71`)
 - **SSH Key**: You need to create `ec2-key.pem` file (see below)
+
+> **Note:** Replace `YOUR_EC2_IP` with your actual EC2 public IP address throughout this guide.
 
 ## Step 0: Get Your SSH Key File
 
@@ -38,10 +40,10 @@ This will automatically try common usernames and tell you which one works.
 ### Option B: Try Manually
 ```powershell
 # Try ec2-user (most common)
-ssh -i ec2-key.pem ec2-user@44.223.6.71
+ssh -i ec2-key.pem ec2-user@YOUR_EC2_IP
 
 # If that fails, try ubuntu
-ssh -i ec2-key.pem ubuntu@44.223.6.71
+ssh -i ec2-key.pem ubuntu@YOUR_EC2_IP
 ```
 
 ### Option C: Check AWS Console
@@ -60,7 +62,7 @@ Add these three secrets:
 
 ### Secret 1: EC2_HOST
 - **Name**: `EC2_HOST`
-- **Value**: `44.223.6.71`
+- **Value**: `YOUR_EC2_IP` (e.g., `44.223.6.71`)
 
 ### Secret 2: EC2_USER
 - **Name**: `EC2_USER`
@@ -96,8 +98,8 @@ Make sure your EC2 Security Group allows:
 Before setting up CI/CD, test that you can connect:
 
 ```powershell
-# Replace 'ec2-user' with your actual username
-ssh -i ec2-key.pem ec2-user@44.223.6.71
+# Replace 'ec2-user' with your actual username and YOUR_EC2_IP with your IP
+ssh -i ec2-key.pem ec2-user@YOUR_EC2_IP
 
 # Once connected, test Docker
 docker --version
@@ -129,7 +131,7 @@ git push origin main
 The workflow will automatically:
 1. ✅ Test your code
 2. ✅ Build Docker image
-3. ✅ Deploy to EC2 (44.223.6.71)
+3. ✅ Deploy to EC2 (YOUR_EC2_IP)
 4. ✅ Run health checks
 
 ## Step 6: Monitor Deployment
@@ -157,8 +159,8 @@ The workflow will automatically:
 ## Next Steps
 
 After successful deployment:
-- Your API will be available at: `http://44.223.6.71`
-- Test health endpoint: `http://44.223.6.71/health`
+- Your API will be available at: `http://YOUR_EC2_IP`
+- Test health endpoint: `http://YOUR_EC2_IP/health`
 - Every push to `main` branch will auto-deploy!
 
 ## Need Help?

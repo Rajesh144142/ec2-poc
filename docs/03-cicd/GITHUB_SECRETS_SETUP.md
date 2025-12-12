@@ -39,12 +39,13 @@
 **Option 1: Using PowerShell (Recommended)**
 ```powershell
 # Run this in your local Windows PowerShell (NOT on EC2):
-Get-Content C:\Users\rajes\ec2-key.pem
+# Replace 'path\to\your\key.pem' with your actual key file path
+Get-Content path\to\your\ec2-key.pem
 ```
 
 **Option 2: Using Notepad**
 1. Open File Explorer
-2. Navigate to `C:\Users\rajes\`
+2. Navigate to the folder containing your `ec2-key.pem` file
 3. Right-click `ec2-key.pem` → Open with → Notepad
 4. Select All (Ctrl+A) and Copy (Ctrl+C)
 

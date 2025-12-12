@@ -8,3 +8,9 @@ npm-debug.log
 *.key
 ec2-key.pem
 
+# Personal test scripts - contain instance-specific IPs
+test-*.ps1
+test-connection.ps1
+test-ssh.ps1
+test-endpoint.ps1
+

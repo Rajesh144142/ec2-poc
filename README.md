@@ -73,10 +73,24 @@ docker ps
 
 All endpoints are accessible through Nginx on port 80:
 
-- `GET http://YOUR_EC2_IP/health` - Health check endpoint
-- `GET http://YOUR_EC2_IP/api/status` - API status information
-- `GET http://YOUR_EC2_IP/api/data` - Get sample data
-- `POST http://YOUR_EC2_IP/api/data` - Create new data (requires `name` in body)
+### Health & Status
+- `GET /health` - Health check endpoint
+- `GET /api/status` - API status information
+
+### Sample Data
+- `GET /api/data` - Get sample data
+- `POST /api/data` - Create new data (requires `name` in body)
+
+### Users API (CRUD Operations)
+- `GET /api/users` - Get all users
+- `GET /api/users/:id` - Get user by ID
+- `POST /api/users` - Create new user (requires `name` and `email` in body)
+- `PUT /api/users/:id` - Update user (requires `name` and/or `email` in body)
+- `DELETE /api/users/:id` - Delete user by ID
+
+**Base URL:** `http://YOUR_EC2_IP`
+
+For detailed API documentation, see [API Documentation](docs/02-ec2-setup/API_DOCUMENTATION.md).
 
 ## Architecture
 
@@ -142,7 +156,26 @@ You can also deploy manually using the script:
 ./deploy.sh
 ```
 
+## 📚 Documentation
+
+All project documentation is organized in the [`docs/`](docs/) directory:
+
+### Quick Links
+- **[📖 Documentation Index](docs/README.md)** - Complete documentation overview
+- **[🚀 Quick Start Guide](docs/01-getting-started/QUICK_START.md)** - Get started quickly
+- **[🔌 EC2 Connection Guide](docs/02-ec2-setup/EC2_CONNECTION_GUIDE.md)** - Connect to EC2
+- **[🔄 CI/CD Guide](docs/03-cicd/CI_CD_GUIDE.md)** - Automated deployment
+- **[📈 Learning Roadmap](docs/04-advanced/LEARNING_ROADMAP.md)** - POC to production path
+
+### Documentation Sections
+
+1. **[Getting Started](docs/01-getting-started/)** - Initial setup and configuration
+2. **[EC2 Setup & Connection](docs/02-ec2-setup/)** - EC2 deployment and troubleshooting
+3. **[CI/CD](docs/03-cicd/)** - Automated deployment pipelines
+4. **[Advanced Topics](docs/04-advanced/)** - Production architecture and scaling
+5. **[Security](docs/05-security/)** - Security best practices
+
 For detailed CI/CD documentation, see:
 - [`.github/SETUP.md`](.github/SETUP.md) - Setup instructions
-- [`CI_CD_GUIDE.md`](CI_CD_GUIDE.md) - Comprehensive guide
+- [CI/CD Guide](docs/03-cicd/CI_CD_GUIDE.md) - Comprehensive guide
 

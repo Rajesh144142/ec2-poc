@@ -11,7 +11,11 @@ RUN npm ci --only=production
 
 COPY . .
 
-# Copy PM2 ecosystem file
-COPY ecosystem.config.js ./
+# Create logs directory for PM2 (before switching to node user)
+RUN mkdir -p logs && chown -R node:node /app/logs
 
 EXPOSE 3000
+
+USER node
+
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]

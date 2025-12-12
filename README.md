@@ -162,6 +162,7 @@ All project documentation is organized in the [`docs/`](docs/) directory:
 
 ### Quick Links
 - **[📖 Documentation Index](docs/README.md)** - Complete documentation overview
+- **[🏗️ System Design & Architecture](docs/SYSTEM_DESIGN.md)** - System architecture and request flow
 - **[🚀 Quick Start Guide](docs/01-getting-started/QUICK_START.md)** - Get started quickly
 - **[🔌 EC2 Connection Guide](docs/02-ec2-setup/EC2_CONNECTION_GUIDE.md)** - Connect to EC2
 - **[🔄 CI/CD Guide](docs/03-cicd/CI_CD_GUIDE.md)** - Automated deployment

@@ -48,6 +48,7 @@ This directory contains all project documentation organized by topic. Follow the
 ### 4. Advanced Topics
 **Production-ready architecture and scaling**
 
+- [System Design & Architecture](SYSTEM_DESIGN.md) - Complete system architecture and request flow
 - [Learning Roadmap](04-advanced/LEARNING_ROADMAP.md) - Path from POC to production
 - [VPC Management Guide](04-advanced/VPC_MANAGEMENT_GUIDE.md) - Network architecture and VPC setup
 - [EC2 Cost Management](04-advanced/EC2_COST_MANAGEMENT.md) - Managing AWS costs and optimization
@@ -78,9 +79,10 @@ This directory contains all project documentation organized by topic. Follow the
 2. [How to Check Base URL](02-ec2-setup/HOW_TO_CHECK_BASE_URL.md)
 
 ### For Production Setup
-1. [Learning Roadmap](04-advanced/LEARNING_ROADMAP.md)
-2. [VPC Management Guide](04-advanced/VPC_MANAGEMENT_GUIDE.md)
-3. [Security Checklist](05-security/SECURITY_CHECKLIST.md)
+1. [System Design & Architecture](SYSTEM_DESIGN.md) - Understand the architecture
+2. [Learning Roadmap](04-advanced/LEARNING_ROADMAP.md)
+3. [VPC Management Guide](04-advanced/VPC_MANAGEMENT_GUIDE.md)
+4. [Security Checklist](05-security/SECURITY_CHECKLIST.md)
 
 ---
 
